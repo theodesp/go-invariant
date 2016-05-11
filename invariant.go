@@ -2,6 +2,7 @@ package invariant
 
 import (
 	"fmt"
+
 	"github.com/namsral/flag"
 )
 
@@ -19,10 +20,14 @@ func (e InvariantError) Error() string {
 	return fmt.Sprintf("%v", e.What)
 }
 
-func invariant(condition bool, format string, args ...interface{}) error {
+func (e InvariantError) String() string {
+	return fmt.Sprintf("%v", e.What)
+}
+
+func Invariant(condition bool, format string, args ...interface{}) error {
 	var env string
 
-	flag.StringVar(&env, "environment", development, "current environment (development or production)")
+	flag.StringVar(&env, "env", development, "current environment (development or production)")
 	flag.Parse()
 
 	if env != production {
@@ -34,7 +39,7 @@ func invariant(condition bool, format string, args ...interface{}) error {
 	if !condition {
 		var error InvariantError
 
-		if format == "" {
+		if env != development {
 			error = InvariantError{"invariant exception in production environment. Please use development flag to see the full error message", "Invariant Violation"}
 		} else {
 			error = InvariantError{fmt.Sprintf(format, args...), "Invariant Violation"}
