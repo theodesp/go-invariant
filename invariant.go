@@ -2,8 +2,7 @@ package invariant
 
 import (
 	"fmt"
-
-	"github.com/namsral/flag"
+	"flag"
 )
 
 const (
